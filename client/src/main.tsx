@@ -1,13 +1,12 @@
 import React, { useReducer, useState } from 'react';
 import { BoardState, Coordinate, Square, XorO } from './types';
-import { getWinner } from './helpers';
+import { getWinner, move, Move } from './helpers';
 
 type BoardAction =
-  | {
-      player: XorO;
-      square: Square;
-    }
-  | 'reset';
+  | ({
+      type: 'move';
+    } & Move)
+  | { type: 'reset' };
 
 const STARTING_PLAYER = 'X' satisfies XorO;
 
@@ -21,31 +20,12 @@ function getInitialState(): BoardState {
 }
 
 function reducer(state: BoardState, action: BoardAction) {
-  if (action === 'reset') {
+  if (action.type === 'reset') {
     return getInitialState();
   }
 
   const { player, square } = action;
-  const [actionRow, actionColumn] = square;
-  const currentSquareValue = state[actionRow][actionColumn];
-
-  // early return if the square is already filled
-  if (currentSquareValue !== undefined) {
-    return state;
-  }
-
-  // must return copies of array for useReducer to detect changes
-  return state.map((row, rowIndex) => {
-    if (rowIndex === actionRow) {
-      return row.map((column, columnIndex) => {
-        if (columnIndex === actionColumn) {
-          return player;
-        }
-        return column;
-      });
-    }
-    return row;
-  }) as BoardState; // TODO: investigate removing type assertion;
+  return move(state, { player, square });
 }
 
 export const Main = () => {
@@ -55,7 +35,7 @@ export const Main = () => {
   const winner = getWinner(board);
 
   function onSquareClick(square: Square) {
-    dispatch({ player, square });
+    dispatch({ type: 'move', player, square });
     setPlayer((currentPlayer) => (currentPlayer === 'X' ? 'O' : 'X'));
   }
 
@@ -97,7 +77,7 @@ export const Main = () => {
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
-          dispatch('reset');
+          dispatch({ type: 'reset' });
           setPlayer(STARTING_PLAYER);
         }}
       >
