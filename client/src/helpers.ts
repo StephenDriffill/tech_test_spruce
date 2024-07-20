@@ -76,3 +76,12 @@ export function move(state: BoardState, move: Move) {
     return row;
   }) as BoardState; // TODO: investigate removing type assertion;
 }
+
+// TODO: improve this to handle different board sizes
+export function getInitialState(): BoardState {
+  return [
+    [undefined, undefined, undefined] as const,
+    [undefined, undefined, undefined] as const,
+    [undefined, undefined, undefined] as const,
+  ] as const;
+}

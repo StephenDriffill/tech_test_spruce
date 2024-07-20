@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 import { BoardState, Coordinate, Square, XorO } from './types';
-import { getWinner, move, Move } from './helpers';
+import { getInitialState, getWinner, move, Move } from './helpers';
 
 type BoardAction =
   | ({
@@ -9,15 +9,6 @@ type BoardAction =
   | { type: 'reset' };
 
 const STARTING_PLAYER = 'X' satisfies XorO;
-
-// TODO: improve this to handle different board sizes
-function getInitialState(): BoardState {
-  return [
-    [undefined, undefined, undefined] as const,
-    [undefined, undefined, undefined] as const,
-    [undefined, undefined, undefined] as const,
-  ] as const;
-}
 
 function reducer(state: BoardState, action: BoardAction) {
   if (action.type === 'reset') {
