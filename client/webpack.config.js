@@ -1,6 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const tailwindcss = require('tailwindcss')
-const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const tailwindcss = require('tailwindcss');
+const webpack = require('webpack');
 
 module.exports = (env) => ({
   mode: 'development',
@@ -51,4 +51,4 @@ module.exports = (env) => ({
     historyApiFallback: true,
     port: 3001
   }
-})
+});

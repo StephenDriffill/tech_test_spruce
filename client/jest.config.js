@@ -6,4 +6,4 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.svg$': '<rootDir>/svg_transform.js'
   }
-}
+};
