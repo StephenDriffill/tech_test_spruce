@@ -25,9 +25,9 @@ export const Main = () => {
 
   const winner = getWinner(board);
 
-  const isGameOver = board.every((row) =>
-    row.every((column) => column !== undefined),
-  );
+  const isGameOver =
+    winner !== undefined ||
+    board.every((row) => row.every((column) => column !== undefined));
 
   function onSquareClick(square: Square) {
     dispatch({ type: 'move', player, square });
@@ -63,8 +63,6 @@ export const Main = () => {
         <div className="text-xl font-bold text-green-500">
           {winner !== undefined ? `Winner: ${winner}` : "It's a tie!"}
         </div>
-      ) : isGameOver ? (
-        <div className="text-xl font-bold text-green-500">It's a tie!</div>
       ) : (
         <div className="text-xl font-bold">Player: {player}</div>
       )}
@@ -76,7 +74,7 @@ export const Main = () => {
           setPlayer(STARTING_PLAYER);
         }}
       >
-        {isGameOver !== undefined ? 'Play Again' : 'Reset'}
+        {isGameOver ? 'Play Again' : 'Reset'}
       </button>
     </div>
   );
