@@ -1,4 +1,4 @@
-import { getInitialState, getWinner } from './helpers';
+import { getInitialState, getWinner, Move, move } from './helpers';
 import { BoardState, XorO } from './types';
 
 /**
@@ -117,5 +117,43 @@ describe('getWinner', () => {
 
   it('should return undefined when the board is empty', async () => {
     expect(getWinner(getInitialState())).toBeUndefined();
+  });
+});
+
+class StateWithMove {
+  state: BoardState;
+
+  constructor(state: BoardState) {
+    this.state = state;
+  }
+
+  move(nextMove: Move) {
+    this.state = move(this.state, nextMove);
+    return this;
+  }
+}
+
+describe('move', () => {
+  it('should return the new state with the move', async () => {
+    const state = new StateWithMove(getInitialState());
+    state.move({ player: 'X', square: [0, 0] });
+    expect(state.state[0][0]).toEqual('X');
+  });
+
+  it('should return the same state if the square is already filled', async () => {
+    const state = new StateWithMove(getInitialState());
+    state.move({ player: 'X', square: [0, 0] });
+    state.move({ player: 'O', square: [0, 0] });
+    expect(state.state[0][0]).toEqual('X');
+  });
+
+  it('should return the same state if the game is already won', async () => {
+    const state = new StateWithMove([
+      ['X', 'X', 'X'] as const,
+      [undefined, undefined, undefined] as const,
+      [undefined, undefined, undefined] as const,
+    ] as const);
+    state.move({ player: 'O', square: [1, 1] });
+    expect(state.state[1][1]).toBeUndefined();
   });
 });
