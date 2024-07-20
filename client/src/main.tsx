@@ -11,10 +11,14 @@ type Row = [SquareValue, SquareValue, SquareValue];
 
 type BoardState = [Row, Row, Row];
 
-interface BoardAction {
-  player: XorO;
-  square: Square;
-}
+type BoardAction =
+  | {
+      player: XorO;
+      square: Square;
+    }
+  | 'reset';
+
+const STARTING_PLAYER = 'X' satisfies XorO;
 
 // TODO: improve this to detect invalid state i.e. both players have won
 // TODO: improve this to return the squares that won for UI feedback
@@ -45,7 +49,21 @@ function getWinner(board: BoardState) {
   return undefined;
 }
 
-function reducer(state: BoardState, { player, square }: BoardAction) {
+// TODO: improve this to handle different board sizes
+function getInitialState(): BoardState {
+  return [
+    [undefined, undefined, undefined] as const,
+    [undefined, undefined, undefined] as const,
+    [undefined, undefined, undefined] as const,
+  ] as const;
+}
+
+function reducer(state: BoardState, action: BoardAction) {
+  if (action === 'reset') {
+    return getInitialState();
+  }
+
+  const { player, square } = action;
   const [actionRow, actionColumn] = square;
   const currentSquareValue = state[actionRow][actionColumn];
 
@@ -68,16 +86,9 @@ function reducer(state: BoardState, { player, square }: BoardAction) {
   }) as BoardState; // TODO: investigate removing type assertion;
 }
 
-// TODO: improve this to handle different board sizes
-const initialState: BoardState = [
-  [undefined, undefined, undefined] as const,
-  [undefined, undefined, undefined] as const,
-  [undefined, undefined, undefined] as const,
-] as const;
-
 export const Main = () => {
-  const [board, dispatch] = useReducer(reducer, initialState);
-  const [player, setPlayer] = useState<XorO>('X');
+  const [board, dispatch] = useReducer(reducer, getInitialState());
+  const [player, setPlayer] = useState<XorO>(STARTING_PLAYER);
 
   const winner = getWinner(board);
 
@@ -110,6 +121,26 @@ export const Main = () => {
           </div>
         ))}
       </div>
+
+      <div>
+        {winner ? (
+          <div className="text-xl font-bold text-green-500">
+            Winner: {winner} !
+          </div>
+        ) : (
+          <div className="text-xl font-bold">Player: {player}</div>
+        )}
+      </div>
+
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={() => {
+          dispatch('reset');
+          setPlayer(STARTING_PLAYER);
+        }}
+      >
+        {winner !== undefined ? 'Play Again' : 'Reset'}
+      </button>
     </div>
   );
 };
