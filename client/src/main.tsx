@@ -69,6 +69,7 @@ function reducer(state: BoardState, { player, square }: BoardAction) {
   }) as BoardState; // TODO: investigate removing type assertion;
 }
 
+// TODO: improve this to handle different board sizes
 const initialState: BoardState = [
   [undefined, undefined, undefined] as const,
   [undefined, undefined, undefined] as const,
