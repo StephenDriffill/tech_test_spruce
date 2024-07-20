@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from 'react';
 import { XorO } from './types';
-import { get } from 'lodash';
 
 type Coordinate = 0 | 1 | 2;
 
