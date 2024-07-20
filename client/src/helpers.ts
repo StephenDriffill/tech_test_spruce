@@ -63,6 +63,11 @@ export function move(state: BoardState, move: Move) {
     return state;
   }
 
+  // early return if the game is already won
+  if (getWinner(state) !== undefined) {
+    return state;
+  }
+
   // must return copies of array for useReducer to detect changes
   return state.map((row, rowIndex) => {
     if (rowIndex === actionRow) {
